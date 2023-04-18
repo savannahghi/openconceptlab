@@ -1,0 +1,37 @@
+name: Testing OpenConceptLab Deployment
+
+on: 
+  push:
+    branches:
+      - alpha
+
+jobs:
+  deploy_to_testing:
+    name: Deploy testing server to google kubernetes engine
+    runs-on: ubuntu-latest
+    # environment:
+    #   name: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+      - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+        with:
+          cluster_name: ${{ env.TEST_CLUSTER_NAME }}
+          location: ${{ env.GKE_ZONE }}
+          credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+ 
+      - name: Deploy to Google Kubernetes engine
+        shell: bash
+        run: cd deploy/ && cat deploy.sh && sh deploy.sh
