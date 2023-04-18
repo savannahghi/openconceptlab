@@ -1,0 +1,155 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "openconceptlab.fullname" . }}
+  labels:
+    {{- include "openconceptlab.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "openconceptlab.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "openconceptlab.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+            
+          env:
+            - name: REDIS_HOST
+              value: {{ .Values.app.container.env.redisHost | quote }}
+
+            - name: REDIS_PORT
+              value: {{ .Values.app.container.env.redisPort | quote }}
+
+            - name: DB_HOST
+              value: {{ .Values.app.container.env.dbHost | quote }}
+
+            - name: DB_PORT
+              value: {{ .Values.app.container.env.dbPort | quote }}
+
+            - name: DB_PASSWORD
+              value: {{ .Values.app.container.env.dbPassword | quote }}
+
+            - name: DB
+              value: {{ .Values.app.container.env.db | quote }}
+
+            - name: ES_HOST
+              value: {{ .Values.app.container.env.elasticSearchHost | quote }}
+
+            - name: ES_PORT
+              value: {{ .Values.app.container.env.elasticSearchPort | quote }}
+
+            - name: ENVIRONMENT
+              value: {{ .Values.app.container.env.environment | quote }}
+
+            - name: DEBUG
+              value: {{ .Values.app.container.env.debug | quote }}
+
+            - name: SECRET_KEY
+              value: {{ .Values.app.container.env.secretKey | quote }}
+
+            - name: SENTRY_DSN_KEY
+              value: {{ .Values.app.container.env.sentryDsn | quote }}
+
+            - name: API_SUPERUSER_PASSWORD
+              value: {{ .Values.app.container.env.apiSuperUserPassword | quote }}
+
+            - name: API_SUPERUSER_TOKEN
+              value: {{ .Values.app.container.env.apiSuperUserToken | quote }}
+
+            - name: API_BASE_URL
+              value: {{ .Values.app.container.env.apiBaseURL | quote }}
+
+            - name: API_INTERNAL_BASE_URL
+              value: {{ .Values.app.container.env.apiInternalBaseURL | quote }}
+
+            - name: EMAIL_NOREPLY_PASSWORD
+              value: {{ .Values.app.container.env.emailNoReplyPassword | quote }}
+
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.app.container.env.awsAccessKeyID | quote }}
+
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.app.container.env.awsSecretAccessKey | quote }}
+
+            - name: AWS_STORAGE_BUCKET_NAME
+              value: {{ .Values.app.container.env.awsStorageBucketName | quote }}
+
+            - name: AWS_REGION_NAME
+              value: {{ .Values.app.container.env.awsRegionName | quote }}
+
+            - name: ERRBIT_URL
+              value: {{ .Values.app.container.env.errbitURL | quote }}
+
+            - name: ERRBIT_KEY
+              value: {{ .Values.app.container.env.errbitKey | quote }}
+
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
+          command: [
+            "/cloud_sql_proxy",
+            "-instances={{ .Values.app.container.env.databaseInstanceConnectionName }}=tcp:5432",
+            "-credential_file={{ .Values.app.container.env.googleApplicationCredentialsSecret.filePath }}"]
+
+          securityContext:
+            runAsNonRoot: false
+            allowPrivilegeEscalation: false
+
+          volumeMounts:
+          - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
+            mountPath: {{ .Values.app.container.env.googleApplicationCredentialsSecret.mountPath }}
+            readOnly: true
+
+        - name: oclweb
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.oclweb.image.repository }}:{{ .Values.oclweb.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.oclweb.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.oclweb.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          
+          env:
+            - name: API_URL
+              value: {{ .Values.app.container.env.apiBaseURL | quote }}
+
+            - name: NODE_ENV
+              value: {{ .Values.oclweb.nodeenv | quote }}
+
+            - name: WEB_PORT
+              value: {{ .Values.oclweb.port | quote }}
+
+      volumes:
+        - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
+          secret:
+            secretName: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
+      
+
