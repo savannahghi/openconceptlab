@@ -1,23 +1,61 @@
 name: Testing OpenConceptLab Deployment
 
-on: 
+on:
   push:
     branches:
       - alpha
+      - setup-helm
+
+env:
+  GKE_ZONE: europe-west1-b
+  GKE_PROJECT: sghi-307909
+  TEST_CLUSTER_NAME: sghi-apps
+  NAMESPACE: ${{ secrets.NAMESPACE }}
+  APP_REPLICA_COUNT: ${{ secrets.APP_REPLICA_COUNT }}
+  PORT: ${{ secrets.PORT }}
+  GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+  APP_DOMAIN: ${{ secrets.APP_DOMAIN }}
+  APP_NAME: ${{ secrets.APP_NAME }}
+  REDIS_HOST: ${{ secrets.REDIS_HOST }}
+  REDIS_PORT: ${{ secrets.REDIS_PORT }}
+  DB_HOST: ${{ secrets.DB_HOST }}
+  DB_PORT: ${{ secrets.DB_PORT }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB: ${{ secrets.DB }}
+  ES_HOST: ${{ secrets.ES_HOST }}
+  ES_PORT: ${{ secrets.ES_PORT }}
+  ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
+  DEBUG: ${{ secrets.DEBUG }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  SENTRY_DSN_KEY: ${{ secrets.SENTRY_DSN_KEY }}
+  API_SUPERUSER_PASSWORD: ${{ secrets.API_SUPERUSER_PASSWORD }}
+  API_SUPERUSER_TOKEN: ${{ secrets.API_SUPERUSER_TOKEN }}
+  API_BASE_URL: ${{ secrets.API_BASE_URL }}
+  API_INTERNAL_BASE_URL: ${{ secrets.API_INTERNAL_BASE_URL }}
+  EMAIL_NOREPLY_PASSWORD: ${{ secrets.EMAIL_NOREPLY_PASSWORD }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_STORAGE_BUCKET_NAME: ${{ secrets.AWS_STORAGE_BUCKET_NAME }}
+  AWS_REGION_NAME: ${{ secrets.AWS_REGION_NAME }}
+  ERRBIT_URL: ${{ secrets.ERRBIT_URL }}
+  ERRBIT_KEY: ${{ secrets.ERRBIT_KEY }}
+  DB_INSTANCE_NAME: ${{ secrets.DB_INSTANCE_NAME }}
+  BACKEND_PORT: ${{ secrets.BACKEND_PORT }}
+  BACKEND_APP_DOMAIN: ${{ secrets.BACKEND_APP_DOMAIN }}
 
 jobs:
   deploy_to_testing:
     name: Deploy testing server to google kubernetes engine
     runs-on: ubuntu-latest
-    # environment:
-    #   name: test
+    environment:
+      name: test
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v0'
+      - id: "auth"
+        uses: "google-github-actions/auth@v0"
         with:
           credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
@@ -31,7 +69,7 @@ jobs:
           cluster_name: ${{ env.TEST_CLUSTER_NAME }}
           location: ${{ env.GKE_ZONE }}
           credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
- 
+
       - name: Deploy to Google Kubernetes engine
         shell: bash
         run: cd deploy/ && cat deploy.sh && sh deploy.sh
