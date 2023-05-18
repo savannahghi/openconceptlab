@@ -103,12 +103,6 @@ spec:
             - name: AWS_REGION_NAME
               value: {{ .Values.app.container.env.awsRegionName | quote }}
 
-            - name: ERRBIT_URL
-              value: {{ .Values.app.container.env.errbitURL | quote }}
-
-            - name: ERRBIT_KEY
-              value: {{ .Values.app.container.env.errbitKey | quote }}
-
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
           command: [

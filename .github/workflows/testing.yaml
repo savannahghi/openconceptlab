@@ -3,8 +3,7 @@ name: Testing OpenConceptLab Deployment
 on:
   push:
     branches:
-      - alpha
-      - setup-helm
+      - develop
 
 env:
   GKE_ZONE: europe-west1-b
@@ -37,8 +36,6 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_STORAGE_BUCKET_NAME: ${{ secrets.AWS_STORAGE_BUCKET_NAME }}
   AWS_REGION_NAME: ${{ secrets.AWS_REGION_NAME }}
-  ERRBIT_URL: ${{ secrets.ERRBIT_URL }}
-  ERRBIT_KEY: ${{ secrets.ERRBIT_KEY }}
   DB_INSTANCE_NAME: ${{ secrets.DB_INSTANCE_NAME }}
   BACKEND_PORT: ${{ secrets.BACKEND_PORT }}
   BACKEND_APP_DOMAIN: ${{ secrets.BACKEND_APP_DOMAIN }}

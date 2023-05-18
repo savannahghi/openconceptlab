@@ -46,8 +46,6 @@ helm upgrade \
     --set app.container.env.awsSecretAccessKey="${AWS_SECRET_ACCESS_KEY}"\
     --set app.container.env.awsStorageBucketName="${AWS_STORAGE_BUCKET_NAME}"\
     --set app.container.env.awsRegionName="${AWS_REGION_NAME}"\
-    --set app.container.env.errbitURL="${ERRBIT_URL}"\
-    --set app.container.env.errbitKey="${ERRBIT_KEY}"\
     --set networking.issuer.name="letsencrypt-prod"\
     --set networking.issuer.privateKeySecretRef="letsencrypt-prod"\
     --set networking.backend.ingress.host="${BACKEND_APP_DOMAIN}"\
