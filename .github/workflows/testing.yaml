@@ -1,9 +1,6 @@
 name: Testing OpenConceptLab Deployment
 
-on:
-  push:
-    branches:
-      - develop
+on: [push]
 
 env:
   GKE_ZONE: europe-west1-b
@@ -43,6 +40,7 @@ env:
 jobs:
   deploy_to_testing:
     name: Deploy testing server to google kubernetes engine
+    if: ${{ github.ref == 'refs/heads/develop'}}
     runs-on: ubuntu-latest
     environment:
       name: test
