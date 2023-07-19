@@ -17,10 +17,12 @@ metadata:
   name: "openconceptlab-api"
   labels:
     {{- include "openconceptlab.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    konghq.com/protocols: "https"
+    konghq.com/https-redirect-status-code: "308"
+  
 spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: kong
