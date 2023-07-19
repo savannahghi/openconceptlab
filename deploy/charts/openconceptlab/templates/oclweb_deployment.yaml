@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oclweb
+  labels:
+    {{- include "openconceptlab.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "openconceptlab.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "openconceptlab.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: oclweb
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.oclweb.image.repository }}:{{ .Values.oclweb.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.oclweb.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.oclweb.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          
+          env:
+            - name: API_URL
+              value: {{ .Values.app.container.env.apiBaseURL | quote }}
+
+            - name: NODE_ENV
+              value: {{ .Values.oclweb.nodeenv | quote }}
+
+            - name: WEB_PORT
+              value: {{ .Values.oclweb.port | quote }}
