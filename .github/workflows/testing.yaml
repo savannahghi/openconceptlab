@@ -3,9 +3,9 @@ name: Testing OpenConceptLab Deployment
 on: [push]
 
 env:
-  GKE_ZONE: europe-west1-b
-  GKE_PROJECT: sghi-307909
-  TEST_CLUSTER_NAME: sghi-apps
+  GKE_ZONE: ${{ secrets.GKE_ZONE }}
+  GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
+  CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
   NAMESPACE: ${{ secrets.NAMESPACE }}
   APP_REPLICA_COUNT: ${{ secrets.APP_REPLICA_COUNT }}
   PORT: ${{ secrets.PORT }}
@@ -61,7 +61,7 @@ jobs:
 
       - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
         with:
-          cluster_name: ${{ env.TEST_CLUSTER_NAME }}
+          cluster_name: ${{ env.CLUSTER_NAME }}
           location: ${{ env.GKE_ZONE }}
           credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
