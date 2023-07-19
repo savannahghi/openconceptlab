@@ -119,28 +119,6 @@ spec:
             mountPath: {{ .Values.app.container.env.googleApplicationCredentialsSecret.mountPath }}
             readOnly: true
 
-        - name: oclweb
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.oclweb.image.repository }}:{{ .Values.oclweb.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.oclweb.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.oclweb.port }}
-              protocol: TCP
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          
-          env:
-            - name: API_URL
-              value: {{ .Values.app.container.env.apiBaseURL | quote }}
-
-            - name: NODE_ENV
-              value: {{ .Values.oclweb.nodeenv | quote }}
-
-            - name: WEB_PORT
-              value: {{ .Values.oclweb.port | quote }}
-
       volumes:
         - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
           secret:
