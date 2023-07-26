@@ -63,7 +63,10 @@ spec:
 
             - name: ES_PORT
               value: {{ .Values.app.container.env.elasticSearchPort | quote }}
-
+            
+            - name: ES_SCHEME
+              value: "https"
+              
             - name: ENVIRONMENT
               value: {{ .Values.app.container.env.environment | quote }}
 
