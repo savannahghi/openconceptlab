@@ -32,6 +32,11 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: [ "bash", "-c" ]
+          args: [
+            ./start_celery_beat.sh &&
+            CELERY_WORKER_NAME=default ./start_celery_worker.sh -P prefork -Q default -c 2
+          ]
           ports:
             - name: http
               containerPort: {{ .Values.service.backendport }}
@@ -44,6 +49,12 @@ spec:
               value: {{ .Values.app.container.env.redisHost | quote }}
 
             - name: REDIS_PORT
+              value: {{ .Values.app.container.env.redisPort | quote }}
+
+            - name: API_HOST
+              value: {{ .Values.app.container.env.redisHost | quote }}
+
+            - name: API_PORT
               value: {{ .Values.app.container.env.redisPort | quote }}
 
             - name: DB_HOST
