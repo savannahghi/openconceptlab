@@ -42,7 +42,7 @@ env:
 jobs:
   deploy_to_testing:
     name: Deploy testing server to google kubernetes engine
-    if: ${{ github.ref == 'refs/heads/bulk-import'}}
+    if: ${{ github.ref == 'refs/heads/celery-concurrent'}}
     runs-on: ubuntu-latest
     environment:
       name: test
