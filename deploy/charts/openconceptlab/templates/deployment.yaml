@@ -106,12 +106,6 @@ spec:
             - name: AWS_REGION_NAME
               value: {{ .Values.app.container.env.awsRegionName | quote }}
 
-            - name: FLOWER_USER
-              value: {{ .Values.app.container.env.flowerUser | quote }}
-
-            - name: FLOWER_PASSWORD
-              value: {{ .Values.app.container.env.flowerPassword | quote }}
-
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
           command: [
