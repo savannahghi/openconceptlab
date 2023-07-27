@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: flower
   labels:
-    {{- include "openconceptlab.labels" . | nindent 4 }}
+    app: flower
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}

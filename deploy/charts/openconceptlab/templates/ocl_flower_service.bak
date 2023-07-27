@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: flower
+  labels:
+    app: flower
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.app.container.env.flowerPort }}
+      targetPort: {{ .Values.app.container.env.flowerPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "openconceptlab.selectorLabels" . | nindent 4 }}
