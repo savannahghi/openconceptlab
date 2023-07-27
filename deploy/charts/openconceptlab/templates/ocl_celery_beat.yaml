@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "openconceptlab.fullname" . }}
+  name: celery-beat
   labels:
     {{- include "openconceptlab.labels" . | nindent 4 }}
 spec:
@@ -27,11 +27,15 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: celery-beat
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: [ "bash", "-c" ]
+          args: [
+              "./start_celery_beat.sh"
+          ]
           ports:
             - name: http
               containerPort: {{ .Values.service.backendport }}
@@ -52,65 +56,15 @@ spec:
             - name: DB_PORT
               value: {{ .Values.app.container.env.dbPort | quote }}
 
-            - name: DB_PASSWORD
-              value: {{ .Values.app.container.env.dbPassword | quote }}
+            - name: API_HOST
+              value: {{ .Values.app.container.env.redisHost | quote }}
 
-            - name: DB
-              value: {{ .Values.app.container.env.db | quote }}
-
-            - name: ES_HOST
-              value: {{ .Values.app.container.env.elasticSearchHost | quote }}
-
-            - name: ES_PORT
-              value: {{ .Values.app.container.env.elasticSearchPort | quote }}
-            
-            - name: ES_SCHEME
-              value: "https"
-              
-            - name: ENVIRONMENT
-              value: {{ .Values.app.container.env.environment | quote }}
+            - name: API_PORT
+              value: {{ .Values.app.container.env.redisPort | quote }}
 
             - name: DEBUG
               value: {{ .Values.app.container.env.debug | quote }}
 
-            - name: SECRET_KEY
-              value: {{ .Values.app.container.env.secretKey | quote }}
-
-            - name: SENTRY_DSN_KEY
-              value: {{ .Values.app.container.env.sentryDsn | quote }}
-
-            - name: API_SUPERUSER_PASSWORD
-              value: {{ .Values.app.container.env.apiSuperUserPassword | quote }}
-
-            - name: API_SUPERUSER_TOKEN
-              value: {{ .Values.app.container.env.apiSuperUserToken | quote }}
-
-            - name: API_BASE_URL
-              value: {{ .Values.app.container.env.apiBaseURL | quote }}
-
-            - name: API_INTERNAL_BASE_URL
-              value: {{ .Values.app.container.env.apiInternalBaseURL | quote }}
-
-            - name: EMAIL_NOREPLY_PASSWORD
-              value: {{ .Values.app.container.env.emailNoReplyPassword | quote }}
-
-            - name: AWS_ACCESS_KEY_ID
-              value: {{ .Values.app.container.env.awsAccessKeyID | quote }}
-
-            - name: AWS_SECRET_ACCESS_KEY
-              value: {{ .Values.app.container.env.awsSecretAccessKey | quote }}
-
-            - name: AWS_STORAGE_BUCKET_NAME
-              value: {{ .Values.app.container.env.awsStorageBucketName | quote }}
-
-            - name: AWS_REGION_NAME
-              value: {{ .Values.app.container.env.awsRegionName | quote }}
-
-            - name: FLOWER_USER
-              value: {{ .Values.app.container.env.flowerUser | quote }}
-
-            - name: FLOWER_PASSWORD
-              value: {{ .Values.app.container.env.flowerPassword | quote }}
 
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
@@ -132,5 +86,3 @@ spec:
         - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
           secret:
             secretName: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
-      
-
