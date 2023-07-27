@@ -43,7 +43,7 @@ env:
 jobs:
   deploy_to_testing:
     name: Deploy testing server to google kubernetes engine
-    if: ${{ github.ref == 'refs/heads/deploy-flower'}}
+    if: ${{ github.ref == 'refs/heads/password-auth'}}
     runs-on: ubuntu-latest
     environment:
       name: test

@@ -56,6 +56,12 @@ spec:
             - name: DB_PORT
               value: {{ .Values.app.container.env.dbPort | quote }}
 
+            - name: DB
+              value: {{ .Values.app.container.env.db | quote }}
+            
+            - name: DB_PASSWORD
+              value: {{ .Values.app.container.env.dbPassword | quote }}
+
             - name: API_HOST
               value: {{ .Values.app.container.env.redisHost | quote }}
 
