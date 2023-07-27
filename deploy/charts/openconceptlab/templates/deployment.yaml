@@ -32,19 +32,6 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: [ "bash", "-c" ]
-          args: [
-              "
-              CELERY_WORKER_NAME=default ./start_celery_worker.sh -P prefork -Q default -c 2 & 
-              CELERY_WORKER_NAME=indexing ./start_celery_worker.sh -P prefork -Q indexing -c 2 & 
-              CELERY_WORKER_NAME=concurrent ./start_celery_worker.sh -P prefork -Q concurrent -c 2 &
-              CELERY_WORKER_NAME=bulk_import_0_1 ./start_celery_worker.sh -Q bulk_import_0,bulk_import_1 -c 1 &
-              CELERY_WORKER_NAME=bulk_import_2_3 ./start_celery_worker.sh -Q bulk_import_2,bulk_import_3 -c 1 &
-              CELERY_WORKER_NAME=bulk_import_root ./start_celery_worker.sh -Q bulk_import_root -c 1 &
-              ./start_celery_beat.sh &
-              ./start_flower.sh
-              "
-          ]
           ports:
             - name: http
               containerPort: {{ .Values.service.backendport }}
