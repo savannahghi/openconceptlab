@@ -36,11 +36,13 @@ env:
   DB_INSTANCE_NAME: ${{ secrets.DB_INSTANCE_NAME }}
   BACKEND_PORT: ${{ secrets.BACKEND_PORT }}
   BACKEND_APP_DOMAIN: ${{ secrets.BACKEND_APP_DOMAIN }}
+  FLOWER_USER: ${{ secrets.FLOWER_USER }}
+  FLOWER_PASSWORD: ${{ secrets.FLOWER_PASSWORD }}
 
 jobs:
   deploy_to_testing:
     name: Deploy testing server to google kubernetes engine
-    if: ${{ github.ref == 'refs/heads/develop'}}
+    if: ${{ github.ref == 'refs/heads/setup-flower'}}
     runs-on: ubuntu-latest
     environment:
       name: test
