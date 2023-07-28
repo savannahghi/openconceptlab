@@ -38,12 +38,13 @@ env:
   BACKEND_APP_DOMAIN: ${{ secrets.BACKEND_APP_DOMAIN }}
   FLOWER_USER: ${{ secrets.FLOWER_USER }}
   FLOWER_PASSWORD: ${{ secrets.FLOWER_PASSWORD }}
+  FLOWER_HOST: ${{ secrets.FLOWER_HOST }}
   FLOWER_PORT: ${{ secrets.FLOWER_PORT }}
 
 jobs:
   deploy_to_testing:
     name: Deploy testing server to google kubernetes engine
-    if: ${{ github.ref == 'refs/heads/oclweb-tag'}}
+    if: ${{ github.ref == 'refs/heads/develop'}}
     runs-on: ubuntu-latest
     environment:
       name: test
