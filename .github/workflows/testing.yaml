@@ -43,7 +43,7 @@ env:
 jobs:
   deploy_to_testing:
     name: Deploy testing server to google kubernetes engine
-    if: ${{ github.ref == 'refs/heads/oclweb-tag'}}
+    if: ${{ github.ref == 'refs/heads/purge-flower'}}
     runs-on: ubuntu-latest
     environment:
       name: test
