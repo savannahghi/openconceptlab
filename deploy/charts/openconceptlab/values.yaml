@@ -28,7 +28,7 @@ oclweb:
     repository: openconceptlab/oclweb2
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "production"
+    tag: "qa"
 
 service:
   type: NodePort
