@@ -35,6 +35,7 @@ helm upgrade \
     --set app.container.env.elasticSearchPort="${ES_PORT}"\
     --set app.container.env.flowerPassword="${FLOWER_PASSWORD}"\
     --set app.container.env.flowerUser="${FLOWER_USER}"\
+    --set app.container.env.flowerHost="${FLOWER_HOST}"\
     --set app.container.env.flowerPort="${FLOWER_PORT}"\
     --set app.container.env.environment="${ENVIRONMENT}"\
     --set app.container.env.debug="${DEBUG}"\
