@@ -44,7 +44,7 @@ env:
 jobs:
   deploy_to_testing:
     name: Deploy testing server to google kubernetes engine
-    if: ${{ github.ref == 'refs/heads/develop'}}
+    if: ${{ github.ref == 'refs/heads/update-tag'}}
     runs-on: ubuntu-latest
     environment:
       name: test
