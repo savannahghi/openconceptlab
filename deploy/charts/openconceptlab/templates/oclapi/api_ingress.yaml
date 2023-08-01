@@ -16,7 +16,7 @@ kind: Ingress
 metadata:
   name: "openconceptlab-api"
   labels:
-    {{- include "openconceptlab.labels" . | nindent 4 }}
+    app: oclapi
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
