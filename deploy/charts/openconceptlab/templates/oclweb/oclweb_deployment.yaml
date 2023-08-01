@@ -3,14 +3,14 @@ kind: Deployment
 metadata:
   name: oclweb
   labels:
-    {{- include "openconceptlab.labels" . | nindent 4 }}
+    app: oclweb
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "openconceptlab.selectorLabels" . | nindent 6 }}
+      app: oclweb
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "openconceptlab.selectorLabels" . | nindent 8 }}
+        app: oclweb
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
