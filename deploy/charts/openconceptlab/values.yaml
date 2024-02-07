@@ -19,7 +19,7 @@ image:
   repository: openconceptlab/oclapi2
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "qa"
+  tag: "production"
 
 oclweb:
   port: 4000
@@ -28,7 +28,7 @@ oclweb:
     repository: openconceptlab/oclweb2
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "qa"
+    tag: "production"
 
 service:
   type: NodePort
