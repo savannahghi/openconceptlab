@@ -27,12 +27,14 @@ helm upgrade \
     --set app.container.env.databaseInstanceConnectionName="${DB_INSTANCE_NAME}"\
     --set app.container.env.redisHost="${REDIS_HOST}"\
     --set app.container.env.redisPort="${REDIS_PORT}"\
+    --set app.container.env.apiHost="${API_HOST}"\
     --set app.container.env.dbHost="${DB_HOST}"\
     --set app.container.env.dbPort="${DB_PORT}"\
     --set app.container.env.db="${DB}"\
     --set app.container.env.dbPassword="${DB_PASSWORD}"\
-    --set app.container.env.elasticSearchHost="${ES_HOST}"\
-    --set app.container.env.elasticSearchPort="${ES_PORT}"\
+    --set app.container.env.elasticSearchHost="${ES_HOSTS}"\
+    --set app.container.env.elasticSearchUser="${ES_USER}"\
+    --set app.container.env.elasticSearchPassword="${ES_PASSWORD}"\
     --set app.container.env.flowerPassword="${FLOWER_PASSWORD}"\
     --set app.container.env.flowerUser="${FLOWER_USER}"\
     --set app.container.env.flowerHost="${FLOWER_HOST}"\

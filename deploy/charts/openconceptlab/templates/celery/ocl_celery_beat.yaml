@@ -63,10 +63,10 @@ spec:
               value: {{ .Values.app.container.env.dbPassword | quote }}
 
             - name: API_HOST
-              value: {{ .Values.app.container.env.redisHost | quote }}
+              value: {{ .Values.app.container.env.apiHost | quote }}
 
             - name: API_PORT
-              value: {{ .Values.app.container.env.redisPort | quote }}
+              value: {{ .Values.service.backendport | quote }}
 
             - name: DEBUG
               value: {{ .Values.app.container.env.debug | quote }}

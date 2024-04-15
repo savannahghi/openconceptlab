@@ -14,11 +14,14 @@ env:
   APP_NAME: ${{ secrets.APP_NAME }}
   REDIS_HOST: ${{ secrets.REDIS_HOST }}
   REDIS_PORT: ${{ secrets.REDIS_PORT }}
+  API_HOST: ${{ secrets.API_HOST }}
   DB_HOST: ${{ secrets.DB_HOST }}
   DB_PORT: ${{ secrets.DB_PORT }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
   DB: ${{ secrets.DB }}
-  ES_HOST: ${{ secrets.ES_HOST }}
+  ES_HOSTS: ${{ secrets.ES_HOSTS }}
+  ES_USER: ${{ secrets.ES_USER }}
+  ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
   ES_PORT: ${{ secrets.ES_PORT }}
   ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
   DEBUG: ${{ secrets.DEBUG }}
@@ -44,7 +47,7 @@ env:
 jobs:
   deploy_to_testing:
     name: Deploy testing server to google kubernetes engine
-    if: ${{ github.ref == 'refs/heads/develop'}}
+    if: ${{ github.ref == 'refs/heads/celery-fixes'}}
     runs-on: ubuntu-latest
     environment:
       name: test
