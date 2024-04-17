@@ -63,11 +63,14 @@ spec:
             - name: DB
               value: {{ .Values.app.container.env.db | quote }}
 
-            - name: ES_HOST
+            - name: ES_HOSTS
               value: {{ .Values.app.container.env.elasticSearchHost | quote }}
 
-            - name: ES_PORT
-              value: {{ .Values.app.container.env.elasticSearchPort | quote }}
+            - name: ES_USER
+              value: {{ .Values.app.container.env.elasticSearchUser | quote }}
+
+            - name: ES_PASSWORD
+              value: {{ .Values.app.container.env.elasticSearchPassword | quote }}
             
             - name: ES_SCHEME
               value: "https"
