@@ -3,15 +3,15 @@ name: Testing OpenConceptLab Deployment
 on: [push]
 
 env:
-  GKE_ZONE: ${{ secrets.GKE_ZONE }}
-  GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
   NAMESPACE: ${{ secrets.NAMESPACE }}
   APP_REPLICA_COUNT: ${{ secrets.APP_REPLICA_COUNT }}
   PORT: ${{ secrets.PORT }}
-  GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
-  APP_DOMAIN: ${{ secrets.APP_DOMAIN }}
   APP_NAME: ${{ secrets.APP_NAME }}
+  APP_DOMAIN: ${{ secrets.APP_DOMAIN }}
   REDIS_HOST: ${{ secrets.REDIS_HOST }}
   REDIS_PORT: ${{ secrets.REDIS_PORT }}
   DB_HOST: ${{ secrets.DB_HOST }}
@@ -29,10 +29,7 @@ env:
   API_BASE_URL: ${{ secrets.API_BASE_URL }}
   API_INTERNAL_BASE_URL: ${{ secrets.API_INTERNAL_BASE_URL }}
   EMAIL_NOREPLY_PASSWORD: ${{ secrets.EMAIL_NOREPLY_PASSWORD }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_STORAGE_BUCKET_NAME: ${{ secrets.AWS_STORAGE_BUCKET_NAME }}
-  AWS_REGION_NAME: ${{ secrets.AWS_REGION_NAME }}
   DB_INSTANCE_NAME: ${{ secrets.DB_INSTANCE_NAME }}
   BACKEND_PORT: ${{ secrets.BACKEND_PORT }}
   BACKEND_APP_DOMAIN: ${{ secrets.BACKEND_APP_DOMAIN }}
@@ -43,7 +40,7 @@ env:
 
 jobs:
   deploy_to_testing:
-    name: Deploy testing server to google kubernetes engine
+    name: Deploy testing server to AWS EKS
     if: ${{ github.ref == 'refs/heads/develop'}}
     runs-on: ubuntu-latest
     environment:
@@ -53,22 +50,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - id: "auth"
-        uses: "google-github-actions/auth@v0"
-        with:
-          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-          project_id: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+      - name: Install AWS CLI
+        shell: bash
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
 
+      - name: Configure AWS Credentials
+        shell: bash
+        run: aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }} && aws configure set region ${{ env.AWS_REGION }}
+
+      - name: Authenticate with AWS EKS
+        shell: bash
+        run: aws eks --region ${{ env.AWS_REGION }} update-kubeconfig --name ${{ env.CLUSTER_NAME }}
+      
       - name: Install Helm
         run: |
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-      - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
-        with:
-          cluster_name: ${{ env.CLUSTER_NAME }}
-          location: ${{ env.GKE_ZONE }}
-          credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-
-      - name: Deploy to Google Kubernetes engine
+      - name: Deploy to AWS EKS using Helm
         shell: bash
         run: cd deploy/ && cat deploy.sh && sh deploy.sh
