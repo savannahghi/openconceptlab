@@ -36,13 +36,7 @@ spec:
           args: [
               "CELERY_WORKER_NAME=concurrent ./start_celery_worker.sh -P prefork -Q concurrent -c 2"
           ]
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.backendport }}
-              protocol: TCP
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-            
+      
           env:
             - name: REDIS_HOST
               value: {{ .Values.app.container.env.redisHost | quote }}
@@ -52,3 +46,45 @@ spec:
 
             - name: DEBUG
               value: {{ .Values.app.container.env.debug | quote }}
+
+            - name: DB_HOST
+              value: {{ .Values.app.container.env.dbHost | quote }}
+
+            - name: DB_PORT
+              value: {{ .Values.app.container.env.dbPort | quote }}
+
+            - name: DB
+              value: {{ .Values.app.container.env.db | quote }}
+
+            - name: DB_USER
+              value: {{ .Values.app.container.env.dbUser | quote }}
+            
+            - name: DB_PASSWORD
+              value: {{ .Values.app.container.env.dbPassword | quote }}
+
+            - name: API_HOST
+              value: {{ .Values.service.backendServiceName }}
+
+            - name: API_PORT
+              value: {{ .Values.service.backendport | quote }}
+
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
+          command: [
+            "/cloud_sql_proxy",
+            "-instances={{ .Values.app.container.env.databaseInstanceConnectionName }}=tcp:5432",
+            "-credential_file={{ .Values.app.container.env.googleApplicationCredentialsSecret.filePath }}"]
+
+          securityContext:
+            runAsNonRoot: false
+            allowPrivilegeEscalation: false
+
+          volumeMounts:
+          - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
+            mountPath: {{ .Values.app.container.env.googleApplicationCredentialsSecret.mountPath }}
+            readOnly: true
+
+      volumes:
+        - name: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}
+          secret:
+            secretName: {{ .Values.app.container.env.googleApplicationCredentialsSecret.name }}

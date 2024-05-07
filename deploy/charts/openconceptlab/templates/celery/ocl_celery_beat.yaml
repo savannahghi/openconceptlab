@@ -36,12 +36,6 @@ spec:
           args: [
               "./start_celery_beat.sh"
           ]
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.backendport }}
-              protocol: TCP
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
             
           env:
             - name: REDIS_HOST
@@ -61,12 +55,15 @@ spec:
             
             - name: DB_PASSWORD
               value: {{ .Values.app.container.env.dbPassword | quote }}
+            
+            - name: DB_USER
+              value: {{ .Values.app.container.env.dbUser | quote }}
 
             - name: API_HOST
-              value: {{ .Values.app.container.env.redisHost | quote }}
+              value: {{ .Values.service.backendServiceName }}
 
             - name: API_PORT
-              value: {{ .Values.app.container.env.redisPort | quote }}
+              value: {{ .Values.service.backendport | quote }}
 
             - name: DEBUG
               value: {{ .Values.app.container.env.debug | quote }}
