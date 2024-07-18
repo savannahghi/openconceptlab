@@ -11,6 +11,10 @@ spec:
       targetPort: {{ .Values.service.backendport }}
       protocol: TCP
       name: http
+    - port: 18048
+      targetPort: 18048
+      protocol: TCP
+      name: http-node
   selector:
     app: oclapi
     

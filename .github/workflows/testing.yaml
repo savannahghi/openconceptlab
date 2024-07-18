@@ -18,8 +18,11 @@ env:
   DB_PORT: ${{ secrets.DB_PORT }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
   DB: ${{ secrets.DB }}
-  ES_HOST: ${{ secrets.ES_HOST }}
+  DB_USER: ${{ secrets.DB_USER }}
+  ES_HOSTS: ${{ secrets.ES_HOSTS }}
   ES_PORT: ${{ secrets.ES_PORT }}
+  ES_USER: ${{ secrets.ES_USER }}
+  ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
   ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
   DEBUG: ${{ secrets.DEBUG }}
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
