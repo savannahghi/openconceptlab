@@ -68,6 +68,21 @@ spec:
             - name: API_PORT
               value: {{ .Values.service.backendport | quote }}
 
+            - name: ES_HOSTS
+              value: {{ .Values.app.container.env.elasticSearchHost | quote }}
+            
+            - name: ES_ENABLE_SNIFFING
+              value: "false"
+
+            - name: ES_USER
+              value: {{ .Values.app.container.env.elasticSearchUser | quote }}
+
+            - name: ES_PASSWORD
+              value: {{ .Values.app.container.env.elasticSearchPassword | quote }}
+            
+            - name: ES_SCHEME
+              value: "http"
+
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.33.2
           command: [
