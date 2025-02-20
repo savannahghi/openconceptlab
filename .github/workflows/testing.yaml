@@ -39,6 +39,7 @@ env:
   DB_INSTANCE_NAME: ${{ secrets.DB_INSTANCE_NAME }}
   BACKEND_PORT: ${{ secrets.BACKEND_PORT }}
   BACKEND_APP_DOMAIN: ${{ secrets.BACKEND_APP_DOMAIN }}
+  FLOWER_DOMAIN: ${{ secrets.FLOWER_DOMAIN }}
   FLOWER_USER: ${{ secrets.FLOWER_USER }}
   FLOWER_PASSWORD: ${{ secrets.FLOWER_PASSWORD }}
   FLOWER_HOST: ${{ secrets.FLOWER_HOST }}

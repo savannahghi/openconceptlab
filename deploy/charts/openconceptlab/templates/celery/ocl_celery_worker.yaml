@@ -36,6 +36,14 @@ spec:
           args: [
               "CELERY_WORKER_NAME=default ./start_celery_worker.sh -P prefork -Q default -c 2"
           ]
+
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "1280Mi"
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
             
           env:
             - name: REDIS_HOST
