@@ -56,6 +56,7 @@ helm upgrade \
     --set networking.issuer.name="letsencrypt-prod"\
     --set networking.issuer.privateKeySecretRef="letsencrypt-prod"\
     --set networking.backend.ingress.host="${BACKEND_APP_DOMAIN}"\
+    --set networking.flower.ingress.host="${FLOWER_DOMAIN}"\
     --set networking.ingress.host="${APP_DOMAIN}"\
     --wait \
     --timeout 300s \

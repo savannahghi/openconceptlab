@@ -39,10 +39,10 @@ spec:
           resources:
             limits:
               cpu: "200m"
-              memory: "32Mi"
+              memory: "128Mi"
             requests:
               cpu: "100m"
-              memory: "16Mi" 
+              memory: "64Mi" 
           
           env:
             - name: API_URL

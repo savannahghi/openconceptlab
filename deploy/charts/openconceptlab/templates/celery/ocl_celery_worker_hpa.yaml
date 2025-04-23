@@ -2,21 +2,21 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "openconceptlab.fullname" . }}
+  name: celery-worker-{{ .Release.Name }}
   labels:
-    app: oclapi
+    {{- include "openconceptlab.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "openconceptlab.fullname" . }}
+    name: celery-worker-{{ .Release.Name }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
     - type: Resource
       resource:
         name: cpu
-        container: {{ .Chart.Name }}
+        container: celery-worker-{{ .Release.Name }}
         target:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
@@ -24,7 +24,7 @@ spec:
     - type: Resource
       resource:
         name: memory
-        container: {{ .Chart.Name }}
+        container: celery-worker-{{ .Release.Name }}
         target:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
