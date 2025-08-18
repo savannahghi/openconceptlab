@@ -19,7 +19,7 @@ image:
   repository: openconceptlab/oclapi2
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "qa"
+  tag: "production"
 
 oclweb:
   port: 4000
@@ -63,8 +63,8 @@ autoscaling:
 
 resources:
   limits:
-    cpu: "500m"
-    memory: "1024Mi"
+    cpu: ""
+    memory: ""
   requests:
     cpu: "500m"
     memory: "1024Mi"
